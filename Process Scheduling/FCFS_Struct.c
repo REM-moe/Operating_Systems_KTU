@@ -59,6 +59,6 @@ void main() {
   printf("\nPID \t AT \t BT \t CT \t TAT\n WT");
   for(int i =0; i<pnum; i++) {
     printf("%d \t %d \t %d \t %d \t %d\t %d\n",process[i].p_id, process[i].arrival_time, process[i].burst_time, process[i].completion_time, process[i].TAT, process[i].waiting_time);
-    printf("Average Turn Around Time: %f \n Average Waiting Time: %d", TotalTAT/pnum, TotalWT/pnum);
+    printf("Average Turn Around Time: %f \n Average Waiting Time: %f \n", TotalTAT/pnum, TotalWT/pnum);
   }
 }
