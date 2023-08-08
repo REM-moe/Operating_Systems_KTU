@@ -1,64 +1,57 @@
-#include<stdio.h>
+#include <stdio.h>
 
-struct Process {
-  int p_id ;
-  int arrival_time;
-  int burst_time;
-  int completion_time;
+typedef struct P{
+  int pno;
+  int AT;
+  int WT;
+  int BT;
+  int CT;
   int TAT;
-  int waiting_time;
-};
+} PS;
 
-void main() {
-  printf("Enter Number Of Process: ");
-  int pnum;
-  scanf("%d",&pnum);
-  
-  struct Process process[pnum];
-
-  for(int i =0; i<pnum; i++) {
-    process[i].p_id = 0;
-    process[i].p_id = process[i].p_id + i+1;
-    printf("Enter arrival Time for process number [ %d ]", process[i].p_id);
-    scanf("%d",&process[i].arrival_time);
-    printf("Enter Burst Time For Process number [ %d ]", process[i].p_id);
-    scanf("%d",&process[i].burst_time);
+int main(int argc, char *argv[]) {
+  int pno;
+  printf("\t FCFS \nEnter Number Of Processes: ");
+  scanf("%d",&pno);
+  PS process[pno];
+  for( int i=0; i<pno; i++) {
+    process[i].pno = i+1;
+    printf("Enter AT: ");
+    scanf("%d",&process[i].AT);
+    printf("Enter BT: ");
+    scanf("%d",&process[i].BT);
+    process[i].CT = 0;
+    process[i].WT = 0;
+    process[i].TAT = 0;
   }
 
-  // Since We are Using First CCome First Serve We Sort the Struct array based on Arrival Time; 
-  //Bubble Sort is fine
-  for(int j =0; j<pnum; j++) {
-    for (int k = 0; k<pnum-j ;k++) {
-      if (process[k].arrival_time > process[k+1].arrival_time) {
-        struct Process temp[pnum];
-        temp[k] = process[k];
-        process[k] = process[k+1];
-        process[k+1] = temp[k];
+  for (int i = 0; i<pno; i++) {
+    for (int j = 0; j<pno-1; j++) {
+      if(process[j].AT > process[j+1].AT) {
+        PS temp;
+        temp = process[j];
+        process[j] = process[j+1];
+        process[j+1] = temp;
       }
     }
   }
 
-  // Calculation
-  int sum =0; 
-  float AverageTAT, AverageWT, TotalTAT, TotalWT = 0.0;
-
-  for(int i =0; i<pnum; i++) {
-    sum = sum + process[i].burst_time;
-      
-    process[i].completion_time = process[i].completion_time + sum;
-      
-    process[i].TAT = process[i].completion_time - process[i].arrival_time;
-    
-    process[i].waiting_time = process[i].TAT - process[i].burst_time;
-
-    TotalTAT += process[i].TAT;
-
-    TotalWT += process[i].waiting_time;
-    }
-  printf("\n ***** FIRST COME FIRST SERVE ***** \n ");
-  printf("\nPID \t AT \t BT \t CT \t TAT\n WT");
-  for(int i =0; i<pnum; i++) {
-    printf("%d \t %d \t %d \t %d \t %d\t %d\n",process[i].p_id, process[i].arrival_time, process[i].burst_time, process[i].completion_time, process[i].TAT, process[i].waiting_time);
-    printf("Average Turn Around Time: %f \n Average Waiting Time: %f \n", TotalTAT/pnum, TotalWT/pnum);
+  int sum, ttat, twt = 0;
+  for (int i = 0; i<pno; i++) {
+    sum += process[i].BT;
+    process[i].CT = sum + process[i].CT;
+    process[i].TAT = process[i].CT - process[i].AT;
+    ttat += process[i].TAT;
+    process[i].WT =  process[i].TAT - process[i].BT;
+    twt += process[i].WT;
   }
+
+  printf("PN \t AT \t BT \t CT \t TT \t WT \t \n");
+  for (int i = 0;i<pno; i++) {
+    printf("%d \t %d \t %d \t %d \t %d \t %d \t \n",process[i].pno, process[i].AT, process[i].BT, process[i].CT, process[i].TAT, process[i].WT);
+  }
+  float avgWT = twt/pno;
+  float avgTT = ttat/pno;
+  printf("Average TAT: %f \t Average WT: %f \n", avgTT, avgWT);
+  return 0;
 }
